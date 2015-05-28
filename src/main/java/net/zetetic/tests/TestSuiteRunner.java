@@ -74,6 +74,7 @@ public class TestSuiteRunner extends AsyncTask<ResultNotifier, TestResult, Void>
         tests.add(new RawRekeyTest());
         //tests.add(new MultiThreadReadWriteTest());
         tests.add(new NestedTransactionsTest());
+        tests.add(new ClosedDatabaseTest());
         return tests;
     }
 }
