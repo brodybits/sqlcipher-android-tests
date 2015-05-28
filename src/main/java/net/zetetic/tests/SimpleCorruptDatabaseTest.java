@@ -1,5 +1,7 @@
 package net.zetetic.tests;
 
+import android.util.Log;
+
 import android.database.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.zetetic.ZeteticApplication;
@@ -10,10 +12,16 @@ import java.io.IOException;
 public class SimpleCorruptDatabaseTest extends SQLCipherTest {
 
     @Override
-    protected void internalSetUp() {
-        /* Not needed for this test:
-         * setUp();
-	 */
+    public TestResult run() {
+
+        TestResult result = new TestResult(getName(), false);
+        try {
+            result.setResult(execute(null));
+            SQLiteDatabase.releaseMemory();
+        } catch (Exception e) {
+            Log.v(ZeteticApplication.TAG, e.toString());
+        }
+        return result;
     }
 
     @Override
