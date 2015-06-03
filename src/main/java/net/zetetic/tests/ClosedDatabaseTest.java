@@ -53,7 +53,31 @@ public class ClosedDatabaseTest extends SQLCipherTest {
 
     boolean execute_closed_database_tests(SQLiteDatabase database) {
         try {
+
             /* operations that check if db is closed (and throw IllegalStateException): */
+
+            try {
+                // [should] throw an exception on a closed database:
+                database.changePassword("new-password");
+
+                // should not get here:
+                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did NOT throw exception on closed database");
+                return false;
+            } catch (IllegalStateException e) {
+                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did throw exception on closed database OK", e);
+            }
+
+            try {
+                // [should] throw an exception on a closed database:
+                database.changePassword("new-password".toCharArray());
+
+                // should not get here:
+                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did NOT throw exception on closed database");
+                return false;
+            } catch (IllegalStateException e) {
+                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did throw exception on closed database OK", e);
+            }
+
             try {
                 // should throw IllegalStateException:
                 database.beginTransaction();
@@ -222,28 +246,6 @@ public class ClosedDatabaseTest extends SQLCipherTest {
                 return false;
             } catch (SQLiteException e) {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.setLocale() did throw exception on closed database OK", e);
-            }
-
-            try {
-                // [should] throw an exception on a closed database:
-                database.changePassword("new-password");
-
-                // should not get here:
-                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did NOT throw exception on closed database");
-                return false;
-            } catch (SQLiteException e) {
-                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did throw exception on closed database OK", e);
-            }
-
-            try {
-                // [should] throw an exception on a closed database:
-                database.changePassword("new-password".toCharArray());
-
-                // should not get here:
-                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did NOT throw exception on closed database");
-                return false;
-            } catch (SQLiteException e) {
-                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did throw exception on closed database OK", e);
             }
 
             try {
