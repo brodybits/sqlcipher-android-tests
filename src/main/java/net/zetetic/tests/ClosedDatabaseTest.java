@@ -53,6 +53,20 @@ public class ClosedDatabaseTest extends SQLCipherTest {
 
     boolean execute_closed_database_tests(SQLiteDatabase database) {
         try {
+
+            /* SQLiteDatabase.changePassword(String) *CANNOT* work on a closed database: */
+            try {
+                database.changePassword("asdf");
+
+                // NOT expected:
+                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.endTransaction() did NOT throw exception on closed database");
+                return false;
+            } catch (SQLiteException e) {
+                Log.v(ZeteticApplication.TAG, "database.changePassword(String) did throw exception on closed database OK", e);
+            } catch (IllegalStateException e) {
+                Log.v(ZeteticApplication.TAG, "database.changePassword(String) did throw exception on closed database OK", e);
+            }
+
             /* operations that check if db is closed (and throw IllegalStateException): */
             try {
                 // should throw IllegalStateException:
