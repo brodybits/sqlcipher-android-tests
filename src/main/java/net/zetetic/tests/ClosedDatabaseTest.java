@@ -53,7 +53,8 @@ public class ClosedDatabaseTest extends SQLCipherTest {
 
     boolean execute_closed_database_tests(SQLiteDatabase database) {
         try {
-            /* operations that check if db is closed (and throw IllegalStateException): */
+            /* operations that check if db is closed
+             * (and [should] throw IllegalStateException): */
             try {
                 // should throw IllegalStateException:
                 database.beginTransaction();
@@ -210,20 +211,6 @@ public class ClosedDatabaseTest extends SQLCipherTest {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.rawExecSQL() did throw exception on closed database OK", e);
             }
 
-            /* operations that do not explicitly check if db is closed
-             * ([should] throw SQLiteException on a closed database): */
-
-            try {
-                // should throw IllegalStateException:
-                database.setLocale(Locale.getDefault());
-
-                // should not get here:
-                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.setLocale() did NOT throw exception on closed database");
-                return false;
-            } catch (SQLiteException e) {
-                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.setLocale() did throw exception on closed database OK", e);
-            }
-
             try {
                 // [should] throw an exception on a closed database:
                 database.changePassword("new-password");
@@ -231,7 +218,7 @@ public class ClosedDatabaseTest extends SQLCipherTest {
                 // should not get here:
                 Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did NOT throw exception on closed database");
                 return false;
-            } catch (SQLiteException e) {
+            } catch (IllegalStateException e) {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(String) did throw exception on closed database OK", e);
             }
 
@@ -242,8 +229,22 @@ public class ClosedDatabaseTest extends SQLCipherTest {
                 // should not get here:
                 Log.e(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did NOT throw exception on closed database");
                 return false;
-            } catch (SQLiteException e) {
+            } catch (IllegalStateException e) {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.changePassword(char []) did throw exception on closed database OK", e);
+            }
+
+            /* operations that do not explicitly check if db is closed
+             * ([should] throw SQLiteException on a closed database): */
+
+            try {
+                // [should] throw an exception on a closed database:
+                database.setLocale(Locale.getDefault());
+
+                // should not get here:
+                Log.e(ZeteticApplication.TAG, "SQLiteDatabase.setLocale() did NOT throw exception on closed database");
+                return false;
+            } catch (SQLiteException e) {
+                Log.v(ZeteticApplication.TAG, "SQLiteDatabase.setLocale() did throw exception on closed database OK", e);
             }
 
             try {
@@ -257,21 +258,15 @@ public class ClosedDatabaseTest extends SQLCipherTest {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.markTableSyncable(String, String) did throw exception on closed database OK", e);
             }
 
-            // TBD SQLiteDatabase.markTableSyncable(String, String, String) does NOT throw exception on closed database:
             try {
-                // NOTE: does not (yet) throw an exception on a closed database:
+                // [should] throw an exception on a closed database:
                 database.markTableSyncable("aa", "bb", "cc");
 
-                // ...
                 // should not get here:
                 Log.e(ZeteticApplication.TAG, "SQLiteDatabase.markTableSyncable(String, String, String) did NOT throw exception on closed database");
                 return false;
             } catch (SQLiteException e) {
                 Log.v(ZeteticApplication.TAG, "SQLiteDatabase.markTableSyncable(String, String, String) did throw exception on closed database OK", e);
-
-                // SIGNAL that this test must be updated:
-                //Log.e(ZeteticApplication.TAG, "BEHAVIOR CHANGED - please update the test");
-                //return false;
             }
 
             try {
